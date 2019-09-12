@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Set View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="SetViewController" customModule="Set" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="8bC-Xf-vdC" userLabel="view">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P2o-NK-Vcw">
+                                <rect key="frame" x="15" y="681" width="100" height="35"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="1ko-zs-u7o"/>
+                                    <constraint firstAttribute="width" constant="100" id="Eqt-hK-v8c"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Deal 3 "/>
+                                <connections>
+                                    <action selector="AddCardsBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qm5-CM-eSF"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dWV-87-3Wt">
+                                <rect key="frame" x="157" y="670" width="100" height="48"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="JTp-d8-jYR"/>
+                                    <constraint firstAttribute="width" constant="100" id="PJq-4C-lwQ"/>
+                                </constraints>
+                                <state key="normal" title="New Game"/>
+                                <connections>
+                                    <action selector="newGamePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TVh-Zq-kHx"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Score: 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0d8-ZL-Agb">
+                                <rect key="frame" x="264" y="20" width="130" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="WR0-d4-064"/>
+                                    <constraint firstAttribute="width" constant="130" id="xGY-yh-b2W"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bwe-6r-j7g" customClass="MainView" customModule="Set" customModuleProvider="target">
+                                <rect key="frame" x="15" y="58" width="384" height="604"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u3Y-GJ-Dar">
+                                <rect key="frame" x="299" y="686" width="100" height="30"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="ZYs-A3-wQJ"/>
+                                    <constraint firstAttribute="width" constant="100" id="nMn-vc-yi4"/>
+                                </constraints>
+                                <state key="normal" title="Hint">
+                                    <color key="titleShadowColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="hintBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="c7h-JQ-DKY"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Bwe-6r-j7g" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="15" id="72D-b0-Qpc"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="u3Y-GJ-Dar" secondAttribute="bottom" constant="20" id="784-HV-Yjw"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dWV-87-3Wt" secondAttribute="bottom" constant="18" id="7U3-zv-ahW"/>
+                            <constraint firstItem="u3Y-GJ-Dar" firstAttribute="top" secondItem="P2o-NK-Vcw" secondAttribute="bottom" constant="-30" id="7UK-Jl-MxS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Bwe-6r-j7g" secondAttribute="trailing" constant="15" id="HmR-1P-33X"/>
+                            <constraint firstItem="Bwe-6r-j7g" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ntg-dl-Sa9"/>
+                            <constraint firstItem="0d8-ZL-Agb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Soh-5B-cEj"/>
+                            <constraint firstItem="dWV-87-3Wt" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Xqj-yc-C3V"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="u3Y-GJ-Dar" secondAttribute="trailing" constant="15" id="gjt-cG-ylc"/>
+                            <constraint firstItem="dWV-87-3Wt" firstAttribute="top" secondItem="Bwe-6r-j7g" secondAttribute="bottom" constant="8" id="oIN-p1-Q47"/>
+                            <constraint firstItem="Bwe-6r-j7g" firstAttribute="top" secondItem="0d8-ZL-Agb" secondAttribute="bottom" constant="8" id="ruH-TA-XGe"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="P2o-NK-Vcw" secondAttribute="trailing" constant="299" id="v44-4V-EHN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0d8-ZL-Agb" secondAttribute="trailing" constant="20" id="yFO-NV-JoV"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="addCards" destination="P2o-NK-Vcw" id="qjf-tM-byq"/>
+                        <outlet property="hintBtn" destination="u3Y-GJ-Dar" id="D99-Z8-B87"/>
+                        <outlet property="mainView" destination="Bwe-6r-j7g" id="uMr-Du-Xzj"/>
+                        <outlet property="newGameBtn" destination="dWV-87-3Wt" id="ttb-py-sZr"/>
+                        <outlet property="scoreLabel" destination="0d8-ZL-Agb" id="rLd-ca-tyQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="117.39130434782609" y="117.39130434782609"/>
+        </scene>
+    </scenes>
+</document>

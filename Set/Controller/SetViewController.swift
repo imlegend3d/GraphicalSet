@@ -27,6 +27,16 @@ class SetViewController: UIViewController, LayoutViews {
         }
     }
     
+    private var setGame: Set! {
+        didSet {
+            let playingCards = setGame.playingCards
+            hints.cards = setGame.hints
+            playingCards.indices.forEach { addSetCardView(for: playingCards[$0])}
+            setGameUI()
+            
+        }
+    }
+    
     @IBOutlet weak var mainView: MainView! {
         didSet {
             layOutFor(view: mainView)
@@ -40,21 +50,9 @@ class SetViewController: UIViewController, LayoutViews {
         }
     }
     
-    //
-    
     private var timer: Timer?
     
     private var lastHint: [SetCardView]?
-    
-    private var setGame: Set! {
-        didSet {
-            let playingCards = setGame.playingCards
-            hints.cards = setGame.hints
-            playingCards.indices.forEach { addSetCardView(for: playingCards[$0])}
-            setGameUI()
-            
-        }
-    }
     
     private var selectedButtons: [SetCardView] {
         return cardButtons.filter{ cardView in
@@ -76,7 +74,7 @@ class SetViewController: UIViewController, LayoutViews {
     }
     
     private var thereIsASet: Bool {
-        let cards = selectedButtons.filter {$0.card != nil }.map {$0.card!}
+        let cards = selectedButtons.map {$0.card!}
         
         if cards.count == 3 && setGame.isSet(cards: cards){
             selectedButtons.forEach { $0.stateOfCard = .selectedAndmatched}
@@ -87,6 +85,20 @@ class SetViewController: UIViewController, LayoutViews {
         return false
     }
     @IBAction func AddCardsBtn(_ sender: UIButton) {
+        if thereIsASet{
+            handleSetState()
+            addCards.isEnabled = setGame.fullDeck.count >= 2
+        }
+        if let cards = setGame.addThreeMoreCards() {
+            for index in cards.indices {
+                addSetCardView(for: cards[index])
+            }
+            //hints.cards = setGame.hints
+        } else {
+            addCards.isEnabled = false
+        }
+        hints.cards = setGame.hints
+        setGameUI()
     }
     
     @IBAction func hintBtnPressed(_ sender: Any) {
@@ -137,7 +149,7 @@ class SetViewController: UIViewController, LayoutViews {
     
     private func addSetCardView(for card: Card) {
         let setCardButton = SetCardView()
-        setCardButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 0.9070095486, alpha: 1)
+        setCardButton.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         setCardButton.card = card
         setCardButton.contentMode = .redraw
         cardButtons.append(setCardButton)
@@ -150,7 +162,7 @@ class SetViewController: UIViewController, LayoutViews {
         
         if thereIsASet{
             handleSetState()
-            addCards.isEnabled = setGame.fullDeck.count >= 3
+            addCards.isEnabled = setGame.fullDeck.count >= 2
         }
         if let cards = setGame.addThreeMoreCards() {
             for index in cards.indices {
@@ -171,7 +183,10 @@ class SetViewController: UIViewController, LayoutViews {
         if cards.count == 3 && setGame.ifSetThenRemove(cards: cards) {
             self.hints.cards = setGame.hints
             setGameUI()
-            selectedButtons.forEach { $0.card = nil}
+            selectedButtons.forEach { $0.card = nil
+                cardButtons.remove(at: cardButtons.firstIndex(of: $0)!)
+                $0.removeFromSuperview()
+            }
         }
     }
     

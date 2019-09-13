@@ -72,7 +72,9 @@ struct SetTypeObject {
     }
     
     var bezierPath: UIBezierPath {
+        
         let paths = UIBezierPath()
+        
         switch objectType {
         case .circle:
             for center in objectsCenter {
@@ -98,13 +100,13 @@ struct SetTypeObject {
         return paths
     }
     
-    private var stripesForObjects: [[((CGPoint, CGPoint))]] {
+    private var stripesForObjects: [[(CGPoint, CGPoint)]] {
         
         var deltaStripe: CGFloat {
             return (objectWidth + objectHeight)/(CGFloat(numberOfStripes) + 1)
         }
         
-        var stripeForObjectas : [[(CGPoint, CGPoint)]] = [[]]
+        var stripeForObjects : [[(CGPoint, CGPoint)]] = [[]]
         
         for origin in objectsOrigin{
             var pointsForStripes: [(CGPoint, CGPoint)] = []
@@ -127,9 +129,9 @@ struct SetTypeObject {
                 let r2 = CGPoint(x: origin.x + objectWidth, y: origin.y)
                 pointsForStripes.append((r1, r2))
             }
-            stripeForObjectas.append(pointsForStripes)
+            stripeForObjects.append(pointsForStripes)
         }
-        return stripeForObjectas
+        return stripeForObjects
     }
     
     var bezierPathForStripes: UIBezierPath {
@@ -144,7 +146,7 @@ struct SetTypeObject {
         return path
     }
     
-    init(in rect: CGRect, for objectType: Shapes, numberOfObjects: Int, fill: CGFloat = 0.65, maxNumberOfObjects: Int = 3) {
+    init(in rect: CGRect, for objectType: Shapes, numberOfObjects: Int, fill: CGFloat = 0.75, maxNumberOfObjects: Int = 3) {
         self.numberOfObjects = numberOfObjects
         self.fill = fill
         self.maxNumberOfObjects = maxNumberOfObjects

@@ -18,7 +18,6 @@ class Set: CustomStringConvertible{
     
     var score = 0
     
-    
     private var indexOfASelectedCard0: Int? = nil
     private var indexOfASelectedCard1: Int? = nil
     private var indexOfASelectedCard2: Int? = nil
@@ -26,22 +25,14 @@ class Set: CustomStringConvertible{
     private var indeces: [Int?] = []
     
     func getFirstDealtOfCards(){
-        
         indeces = [indexOfASelectedCard0, indexOfASelectedCard1, indexOfASelectedCard2]
-        
-        
         guard let cards = fullDeck.draw(number: .twelve) else {return}
-        
         playingCards += cards
-        
         playingCards.shuffle()
-               
     }
     
    func addThreeMoreCards()->[Card]?{
-
         guard let cards = fullDeck.draw(number: .three) else {return []}
-    
         playingCards += cards
         
         return cards
@@ -87,7 +78,6 @@ class Set: CustomStringConvertible{
         return sumMatrix.reduce(true, { $0 && ($1 % 3 == 0) })
     }
     
-    
     func ifSetThenRemove(cards: [Card]) ->Bool{
         guard isSet(cards: cards) else {return false}
         
@@ -115,7 +105,6 @@ class Set: CustomStringConvertible{
         return hints
     }
     
-    
     var description: String {
         var returnString = ""
         returnString += "cardsOnTable: \(playingCards.count)\n \(playingCards)"
@@ -125,7 +114,4 @@ class Set: CustomStringConvertible{
         returnString += "\n\nHints: \(hints.count)\n \(hints) \n\nIt took hints \(-date.timeIntervalSinceNow) seconds"
         return returnString
     }
-    
-
-    
 }

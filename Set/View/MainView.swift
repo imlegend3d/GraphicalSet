@@ -10,6 +10,7 @@ import UIKit
 
 protocol LayoutViews: class {
     func updateViewFromModel()
+    func updateViewsWhenNeeded(cardNum: Int)
 }
 
 class MainView: UIView {
@@ -19,6 +20,11 @@ class MainView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         delegate?.updateViewFromModel()
+    }
+    
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        delegate?.updateViewsWhenNeeded(cardNum: 0)
     }
 
 }

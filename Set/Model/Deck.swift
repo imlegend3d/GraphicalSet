@@ -37,7 +37,7 @@ struct Deck: CustomStringConvertible{
     }
     
     mutating func draw(number: numberOfCardsToDraw = .three ) -> [Card]? {
-        if cards.count > 0 && cards.count > number.rawValue {
+        if cards.count > 0 && cards.count >= number.rawValue {
             var cardsBundle = [Card]()
             for _ in 1...number.rawValue {
                 

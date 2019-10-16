@@ -27,7 +27,7 @@
 		6313B6A62326D3A800B7858C /* SetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetViewController.swift; sourceTree = "<group>"; };
 		6313B6A82326D3C800B7858C /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		6313B6AA2326D56C00B7858C /* SetCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetCardView.swift; sourceTree = "<group>"; };
-		6313B6AE23291F9600B7858C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		6313B6AE23291F9600B7858C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainView.swift; path = ../View/MainView.swift; sourceTree = "<group>"; };
 		6313B6B023292D0300B7858C /* SetTypeObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTypeObject.swift; sourceTree = "<group>"; };
 		6313B6B2232974C400B7858C /* aspectRatioGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aspectRatioGrid.swift; sourceTree = "<group>"; };
 		6336652A23034B130058F991 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				6313B6A62326D3A800B7858C /* SetViewController.swift */,
+				6313B6AE23291F9600B7858C /* MainView.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -76,7 +77,6 @@
 			children = (
 				6336653823036F500058F991 /* Main.storyboard */,
 				6313B6AA2326D56C00B7858C /* SetCardView.swift */,
-				6313B6AE23291F9600B7858C /* MainView.swift */,
 				6313B6A82326D3C800B7858C /* File.swift */,
 			);
 			path = View;

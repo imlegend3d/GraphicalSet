@@ -25,7 +25,6 @@ struct aspectRatioGrid {
         }
         
         func isCloserToIdeal(aspectRatio: CGFloat) -> Bool{
-            
             return (aspectRatioGrid.idealAspectRatio - aspectRatio).abs < (aspectRatioGrid.idealAspectRatio - self.aspectRatio).abs
         }
         

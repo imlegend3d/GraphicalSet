@@ -14,6 +14,8 @@ class SetViewController: UIViewController, LayoutViews  {
     
     lazy var animator = UIDynamicAnimator(referenceView: view)
     
+    lazy var deckViewFrame = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.35, y: mainView.bounds.height * 1.05), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
+    
     @IBOutlet weak var scoreLabel: UILabel! { didSet { layOutFor(view: scoreLabel) } }
     
     @IBOutlet weak var hintBtn: UIButton! { didSet { layOutFor(view: hintBtn) } }
@@ -61,7 +63,7 @@ class SetViewController: UIViewController, LayoutViews  {
     }
     
     private var hints: (cards: [[Card]], index: Int) = ([[]] , 0) {
-
+        
         didSet{
             if hints.index == oldValue.index {
                 hints.index = 0
@@ -69,7 +71,7 @@ class SetViewController: UIViewController, LayoutViews  {
             self.hints.cards = setGame.hints
             
             hintBtn?.isEnabled = !hints.cards.isEmpty ? true : false
-
+            
             hintBtn?.setTitle("hints: \(hints.cards.count)", for: .normal)
         }
     }
@@ -89,13 +91,15 @@ class SetViewController: UIViewController, LayoutViews  {
     private var orientation: Bool = true
     
     private lazy var discardDeck: CGRect = {
-        
         var rect = CGRect.zero
-        if orientation == false {
-             rect = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.70, y: mainView.bounds.height * 0.85), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
-        } else {
-            rect = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.70, y: mainView.bounds.height * 0.85), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
+        if orientation == true {
+            rect = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.70, y: mainView.bounds.height * 0.90), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
+            print(mainView.bounds.height)
+        } else if orientation == false {
+            rect = CGRect(origin: CGPoint(x: mainView.bounds.height * 0.90, y: mainView.bounds.width * 0.70), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
+            print(mainView.bounds.height)
         }
+        
         return rect
     }()
     
@@ -110,6 +114,11 @@ class SetViewController: UIViewController, LayoutViews  {
     }
     
     @IBAction func addCardsBtn(_ sender: UIButton) {
+        
+        if setGame.fullDeck.count <= 2 {
+          
+            deckView.isHidden = true
+        }
         if thereIsASet{
             handleSetState()
             addCards.isEnabled = setGame.fullDeck.count >= 1
@@ -145,7 +154,7 @@ class SetViewController: UIViewController, LayoutViews  {
             if $0.stateOfCard == .hinted {
                 $0.stateOfCard = .unselected
                 self!.lastHint = nil
-                }
+            }
             }
             //self!.lastHint = nil
         })
@@ -182,11 +191,15 @@ class SetViewController: UIViewController, LayoutViews  {
                             self.setGame = Set()
                             self.setGame.score = 0
                             self.addCards.isEnabled = true
+                            
                         }
-                        }
+                }
                 )
         }
         )
+        mainView.addSubview(deckView)
+        deckView.isHidden = false
+        deckView.frame = self.deckViewFrame
     }
     
     // MARK: lifeCycle
@@ -194,37 +207,32 @@ class SetViewController: UIViewController, LayoutViews  {
     override func viewDidLoad() {
         super.viewDidLoad()
         setGame = Set()
-        print("Deck: \(setGame.fullDeck.count)")
-    
     }
-    
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        if UIDevice.current.orientation.isPortrait {
-            
-           // discardDeck = CGRect(origin: CGPoint(x: self.mainView.bounds.width * 0.70, y: self.mainView.bounds.height * 0.90), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
-            orientation = true
-            print(orientation)
-        } else if UIDevice.current.orientation.isLandscape {
-            
+        
+        if UIDevice.current.orientation.isLandscape {
             orientation = false
-            print(orientation)
             
-             //discardDeck = CGRect(origin: CGPoint(x: self.mainView.bounds.width * 0.70 , y: self.mainView.bounds.height * 0.90 ), size: CGSize(width: mainView.bounds.height * 0.1, height: mainView.bounds.width * 0.1))
-            
+        } else if UIDevice.current.orientation.isPortrait {
+            orientation = true
         }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-//        cardButtons.forEach {
-//            $0.flipingCard(animated: true)
-//        }
+        //        cardButtons.forEach {
+        //            $0.flipingCard(animated: true)
+        //        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        deckView.frame = deckViewFrame
+        deckView.isFaceUp = false
+        deckView.isHidden = false
+        mainView.addSubview(deckView)
         //updateViewsWhenNeeded(delay: 5.0)
     }
     
@@ -254,12 +262,12 @@ class SetViewController: UIViewController, LayoutViews  {
     private func handleSetState(){
         
         let cards = selectedButtons.map {$0.card!}
-       
+        
         if cards.count == 3 && setGame.ifSetThenRemove(cards: cards) {
             
             self.hints.cards = setGame.hints
             setGameUI()
-        
+            
             selectedButtons.forEach {
                 animateRemoval(for: $0)
                 $0.card = nil
@@ -281,13 +289,13 @@ class SetViewController: UIViewController, LayoutViews  {
         setCardView.isFaceUp = true
         setCardView.isHidden = false
         setCardView.contentMode = .redraw
-
+        
         mainView.addSubview(setCardView)
         
         UIView.transition(with: setCardView, duration: 2.0, options: [], animations: {
-
+            
             setCardView.bounds.size = CGSize(width: setCardView.frame.size.width * 1.4, height: setCardView.frame.size.height * 1.4)
-
+            
         }
             , completion: { (finished) in
                 UIView.transition(with: setCardView, duration: 2.0, options: [], animations: {
@@ -296,7 +304,7 @@ class SetViewController: UIViewController, LayoutViews  {
                     , completion: { (completed) in
                         
                         UIView.transition(with: setCardView, duration: 2, options: [], animations: {
-
+                            
                             setCardView.frame = self.discardDeck
                             
                         }
@@ -308,8 +316,8 @@ class SetViewController: UIViewController, LayoutViews  {
                                         , completion: { (finished) in
                                             if finished && self.discardDeckShouldGoAway {
                                                 UIView.transition(with: setCardView, duration: 2, options: [], animations: {
-                                                                                        setCardView.frame.origin = CGPoint(x: self.mainView.frame.width + 10.0, y: self.mainView.frame.height + 10.0)
-                                                                                    }
+                                                    setCardView.frame.origin = CGPoint(x: self.mainView.frame.width + 10.0, y: self.mainView.frame.height + 10.0)
+                                                }
                                                     , completion: { completeed in
                                                         if completeed {
                                                             setCardView.removeFromSuperview()
@@ -318,7 +326,7 @@ class SetViewController: UIViewController, LayoutViews  {
                                                 }
                                                 )
                                             }
-                                            }
+                                    }
                                     )
                                 }
                         }
@@ -327,7 +335,7 @@ class SetViewController: UIViewController, LayoutViews  {
                 )
         }
         )
-    
+        
     }
     
     private func setGameUI(){
@@ -348,7 +356,7 @@ class SetViewController: UIViewController, LayoutViews  {
         view.layer.borderWidth = LayOutMetricsForCardView.borderWidthForDrawButton
         view.clipsToBounds = true
     }
-
+    
     // Delegate method:
     
     var animationFinished = false
@@ -356,7 +364,7 @@ class SetViewController: UIViewController, LayoutViews  {
     func updateViewFromModel() {
         
         var buttonsFrames = [CGRect]()
-        let rectForGrid = CGRect(x: mainView.bounds.origin.x, y: mainView.bounds.origin.y, width: mainView.bounds.width, height: mainView.bounds.height * 0.8)
+        let rectForGrid = CGRect(x: mainView.bounds.origin.x, y: mainView.bounds.origin.y, width: mainView.bounds.width, height: mainView.bounds.height * 0.90)
         let grid = aspectRatioGrid(for: rectForGrid , withNoOfFrames: setGame.playingCards.count)
         for index in self.cardButtons.indices {
             let insetXY = (grid[index]?.height ?? 400)/100
@@ -365,18 +373,22 @@ class SetViewController: UIViewController, LayoutViews  {
             buttonsFrames.append(buttonFrame)
         }
         
+        cardButtons.filter{$0.isFaceUp == false}.forEach{$0.frame = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.35, y: mainView.bounds.height * 0.90), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))}
+        
         var delay = 0.0
-
+        
         for card in 0..<cardButtons.count {
             delay += 0.1
             
+            //self.cardButtons[card].frame.origin = CGPoint(x: self.mainView.bounds.width * 0.35, y: self.mainView.bounds.height * 0.90)
             UIView.animate(withDuration: 0.2, delay: delay, options: .curveEaseInOut , animations: {
+                
                 self.cardButtons[card].frame = buttonsFrames[card]
             }
                 , completion: {(finished:Bool) in
                     
                     if finished == true {
-                      self.animationFinished = true
+                        self.animationFinished = true
                         self.updateViewsWhenNeeded(cardNum: card)
                     }
             })
@@ -385,24 +397,26 @@ class SetViewController: UIViewController, LayoutViews  {
     
     func updateViewsWhenNeeded(cardNum: Int) {
         
+     
+        
         let timeDuration = 0.2 * Double(cardButtons.count)
         //let faceDownCards =  cardButtons.filter {$0.isFaceUp == false}
         //let timeInterval = (timeDuration / Double(faceDownCards.count))
         var delay = 0.1
         
         delay = Double(cardNum) * 0.05
-            
-            UIViewPropertyAnimator.runningPropertyAnimator(
-                withDuration: timeDuration ,
-                delay: delay,
-                options: [.transitionFlipFromRight],
-                animations: {
-                    if self.cardButtons[cardNum].isFaceUp == false {
-                       self.cardButtons[cardNum].flipingCard(animated: true)
-                    }
-            }
-                //,  completion: <#T##((UIViewAnimatingPosition) -> Void)?##((UIViewAnimatingPosition) -> Void)?##(UIViewAnimatingPosition) -> Void#>
-            )
+        
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: timeDuration ,
+            delay: delay,
+            options: [.transitionFlipFromRight],
+            animations: {
+                if self.cardButtons[cardNum].isFaceUp == false {
+                    self.cardButtons[cardNum].flipingCard(animated: true)
+                }
+        }
+            //,  completion: <#T##((UIViewAnimatingPosition) -> Void)?##((UIViewAnimatingPosition) -> Void)?##(UIViewAnimatingPosition) -> Void#>
+        )
     }
     
     //Objc methods
@@ -432,3 +446,9 @@ class SetViewController: UIViewController, LayoutViews  {
     }
 }
 
+// custom views
+ var deckView: SetCardView = {
+  var deck = SetCardView(frame: CGRect.zero)
+    
+    return deck
+}()

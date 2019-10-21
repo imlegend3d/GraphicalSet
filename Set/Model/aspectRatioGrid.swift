@@ -87,9 +87,8 @@ struct aspectRatioGrid {
     }
 }
 
-
 extension CGFloat {
     var abs: CGFloat {
-        return self<0 ? -self : self
+        return self < 0 ? -self : self
     }
 }

@@ -38,6 +38,8 @@ class Set: CustomStringConvertible{
         return cards
     }
     
+    
+    ////Method to select the card from the cards on the table.
     func selectingCard(at index: Int) {
         
         playingCards[index].isSelected = !playingCards[index].isSelected

@@ -8,6 +8,8 @@
 
 import UIKit
 
+////Custom drawing objects
+
 struct SetTypeObject {
     
     private enum Orientation {

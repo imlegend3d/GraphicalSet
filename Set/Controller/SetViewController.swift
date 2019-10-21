@@ -10,11 +10,8 @@ import UIKit
 
 class SetViewController: UIViewController, LayoutViews  {
     
+    
     var cardButtons: [SetCardView] = []
-    
-    lazy var animator = UIDynamicAnimator(referenceView: view)
-    
-    lazy var deckViewFrame = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.35, y: mainView.bounds.height * 1.05), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
     
     @IBOutlet weak var scoreLabel: UILabel! { didSet { layOutFor(view: scoreLabel) } }
     
@@ -35,6 +32,8 @@ class SetViewController: UIViewController, LayoutViews  {
             let playingCards = setGame.playingCards
             hints.cards = setGame.hints
             playingCards.indices.forEach { addSetCardView(for: playingCards[$0])}
+            mainView.addSubview(deckView)
+            mainView.addSubview(discardDeck)
             setGameUI()
             
         }
@@ -44,14 +43,26 @@ class SetViewController: UIViewController, LayoutViews  {
         didSet {
             layOutFor(view: mainView)
             
-            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(onDrawCardSwipe(_:)))
-            swipe.direction = [.down]
+            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealSwipe(_:)))
+            swipe.direction = [.up]
             mainView.addGestureRecognizer(swipe)
-            
             mainView.delegate = self
             
         }
     }
+    
+    // custom views
+     private var deckView: SetCardView = {
+        var deck = SetCardView(frame: CGRect.zero)
+        deck.translatesAutoresizingMaskIntoConstraints = false
+        return deck
+    }()
+    
+    private let discardDeck: SetCardView = {
+        let deck = SetCardView(frame: CGRect.zero)
+        deck.translatesAutoresizingMaskIntoConstraints = false
+        return deck
+    }()
     
     private var timer: Timer?
     
@@ -88,21 +99,6 @@ class SetViewController: UIViewController, LayoutViews  {
         return false
     }
     
-    private var orientation: Bool = true
-    
-    private lazy var discardDeck: CGRect = {
-        var rect = CGRect.zero
-        if orientation == true {
-            rect = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.70, y: mainView.bounds.height * 0.90), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
-            print(mainView.bounds.height)
-        } else if orientation == false {
-            rect = CGRect(origin: CGPoint(x: mainView.bounds.height * 0.90, y: mainView.bounds.width * 0.70), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))
-            print(mainView.bounds.height)
-        }
-        
-        return rect
-    }()
-    
     private func addSetCardView(for card: Card) {
         let setCardButton = SetCardView()
         setCardButton.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
@@ -116,7 +112,7 @@ class SetViewController: UIViewController, LayoutViews  {
     @IBAction func addCardsBtn(_ sender: UIButton) {
         
         if setGame.fullDeck.count <= 2 {
-          
+            
             deckView.isHidden = true
         }
         if thereIsASet{
@@ -173,25 +169,22 @@ class SetViewController: UIViewController, LayoutViews  {
             }
         }
             , completion: { (finished) in
-                
-                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 2
-                    , delay: 10, options: [], animations: {
-                        if  self.discardDeckShouldGoAway == false {
+                ////New game animated.
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 3
+                    , delay: 3, options: [], animations: {
+                       //// delay for animation.
+                }
+                    , completion: {(position) in
+                        switch position {
+                        case .end:
                             if finished == true {
                                 self.cardButtons = []
                                 self.setGame = Set()
                                 self.setGame.score = 0
                                 self.addCards.isEnabled = true
                             }
-                        }
-                }
-                    , completion: {(position) in
-                        if finished == true {
-                            self.cardButtons = []
-                            self.setGame = Set()
-                            self.setGame.score = 0
-                            self.addCards.isEnabled = true
-                            
+                        default:
+                            break
                         }
                 }
                 )
@@ -199,7 +192,6 @@ class SetViewController: UIViewController, LayoutViews  {
         )
         mainView.addSubview(deckView)
         deckView.isHidden = false
-        deckView.frame = self.deckViewFrame
     }
     
     // MARK: lifeCycle
@@ -209,36 +201,20 @@ class SetViewController: UIViewController, LayoutViews  {
         setGame = Set()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        if UIDevice.current.orientation.isLandscape {
-            orientation = false
-            
-        } else if UIDevice.current.orientation.isPortrait {
-            orientation = true
-        }
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        //        cardButtons.forEach {
-        //            $0.flipingCard(animated: true)
-        //        }
+      
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        deckView.frame = deckViewFrame
         deckView.isFaceUp = false
         deckView.isHidden = false
-        mainView.addSubview(deckView)
-        //updateViewsWhenNeeded(delay: 5.0)
+        discardDeck.isHidden = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //updateViewsWhenNeeded()
-        //updateViewFromModel()
+      
     }
     
     private func addingCards() {
@@ -251,7 +227,6 @@ class SetViewController: UIViewController, LayoutViews  {
             for index in cards.indices {
                 addSetCardView(for: cards[index])
             }
-            //hints.cards = setGame.hints
         } else {
             addCards.isEnabled = false
         }
@@ -269,7 +244,7 @@ class SetViewController: UIViewController, LayoutViews  {
             setGameUI()
             
             selectedButtons.forEach {
-                animateRemoval(for: $0)
+                animateRemovalofMathcCards(for: $0)
                 $0.card = nil
                 cardButtons.remove(at: cardButtons.firstIndex(of: $0)!)
                 $0.removeFromSuperview()
@@ -294,7 +269,7 @@ class SetViewController: UIViewController, LayoutViews  {
         
         UIView.transition(with: setCardView, duration: 2.0, options: [], animations: {
             
-            setCardView.bounds.size = CGSize(width: setCardView.frame.size.width * 1.4, height: setCardView.frame.size.height * 1.4)
+            setCardView.bounds.size = CGSize(width: setCardView.frame.size.width * 1.2, height: setCardView.frame.size.height * 1.2)
             
         }
             , completion: { (finished) in
@@ -305,7 +280,7 @@ class SetViewController: UIViewController, LayoutViews  {
                         
                         UIView.transition(with: setCardView, duration: 2, options: [], animations: {
                             
-                            setCardView.frame = self.discardDeck
+                            setCardView.frame = self.discardDeck.frame
                             
                         }
                             , completion: { finishes in
@@ -314,7 +289,82 @@ class SetViewController: UIViewController, LayoutViews  {
                                         setCardView.isFaceUp = false
                                     }
                                         , completion: { (finished) in
+                                            self.discardDeck.isHidden = true
+                                             self.discardDeck.isFaceUp = false
+                                             ////When the animation has finished and the variable discardDeckShouldGoAway(newgame pressed) then perform the next part of the animation.
                                             if finished && self.discardDeckShouldGoAway {
+                                                
+                                                UIView.transition(with: setCardView, duration: 2, options: [], animations: {
+                                                    setCardView.frame.origin = CGPoint(x: self.mainView.frame.width + 10.0, y: self.mainView.frame.height + 10.0)
+                                                }
+                                                    , completion: { completeed in
+                                                        if completeed {
+                                                            setCardView.removeFromSuperview()
+                                                            self.discardDeckShouldGoAway = false
+                                                        }
+                                                }
+                                                )
+                                            }
+                                    }
+                                    )
+                                }
+                        }
+                        )
+                }
+                )
+        }
+        )
+    }
+    
+    
+    ////Animation of removal of match cards(3 cards) this method is similar to the previous one but only for 3 carsd and doe not remove them all from the superview.
+    private func animateRemovalofMathcCards(for card: SetCardView) {
+        var setCardView: SetCardView! { didSet { layOutFor(view: setCardView) } }
+        setCardView = SetCardView(frame: card.frame)
+        setCardView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        setCardView.card = card.card
+        setCardView.cardIndex = card.cardIndex
+        setCardView.draw(setCardView.frame)
+        
+        setCardView.isFaceUp = true
+        setCardView.isHidden = false
+        setCardView.contentMode = .redraw
+        
+        mainView.addSubview(setCardView)
+        
+        UIView.transition(with: setCardView, duration: 2.0, options: [], animations: {
+            
+            setCardView.bounds.size = CGSize(width: setCardView.frame.size.width * 1.1, height: setCardView.frame.size.height * 1.1)
+            
+        }
+            , completion: { (finished) in
+                
+                //self.cardBehavior.addItem(setCardView) - " Decided against using the UIDinamics animation where the matched card flyaway and bounce of one another, I did not find the animation to be elegant or necessary.
+                
+                UIView.transition(with: setCardView, duration: 2.0, options: [], animations: {
+                    setCardView.center = self.mainView.center
+                }
+                    , completion: { (completed) in
+                        
+                        UIView.transition(with: setCardView, duration: 2, options: [], animations: {
+                            
+                            setCardView.frame = self.discardDeck.frame
+                            
+                        }
+                            , completion: { finishes in
+                                if finished {
+                                    UIView.transition(with: setCardView, duration: 1, options: [.transitionFlipFromTop], animations: {
+                                        setCardView.isFaceUp = false
+                                    }
+                                        , completion: { (finished) in
+                                            ////When the card flips the discard deck apperas and the actual card is hidden so that when the screen is rotated the setCardView will be hidden.
+                                            self.discardDeck.isHidden = false
+                                             setCardView.isHidden = true
+                                           
+                                            if finished && self.discardDeckShouldGoAway {
+                                                //// setCardView reapperas
+                                                setCardView.isHidden = false
+                                                ////Animation of moving the discardDeck off the table.
                                                 UIView.transition(with: setCardView, duration: 2, options: [], animations: {
                                                     setCardView.frame.origin = CGPoint(x: self.mainView.frame.width + 10.0, y: self.mainView.frame.height + 10.0)
                                                 }
@@ -339,8 +389,21 @@ class SetViewController: UIViewController, LayoutViews  {
     }
     
     private func setGameUI(){
-        // cardsDisplayed.forEach {$0.backgroundColor = $0.card != nil ? UIColor.lightGray : UIColor.clear }
         scoreLabel.text = "Score: \(setGame.score)"
+        
+        //AutoLayout for the deckview
+        deckView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor).isActive = true
+        deckView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: (mainView.frame.width / 3 - (deckView.frame.width/2))).isActive = true
+        deckView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.1).isActive = true
+        deckView.widthAnchor.constraint(equalTo: mainView.widthAnchor, multiplier: 0.1).isActive = true
+        
+        //AutoLayout for the discardDeck
+        discardDeck.bottomAnchor.constraint(equalTo: mainView.bottomAnchor).isActive = true
+        discardDeck.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: ((mainView.frame.width * 2/3) - (discardDeck.frame.width/2))).isActive = true
+        discardDeck.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.1).isActive = true
+        discardDeck.widthAnchor.constraint(equalTo: mainView.widthAnchor, multiplier: 0.1).isActive = true
+        
+        
     }
     
     private func buttonsFor(cards: [Card]) -> [SetCardView]{
@@ -357,30 +420,29 @@ class SetViewController: UIViewController, LayoutViews  {
         view.clipsToBounds = true
     }
     
-    // Delegate method:
-    
     var animationFinished = false
     
+    // Delegate method:
+
     func updateViewFromModel() {
-        
+       
         var buttonsFrames = [CGRect]()
         let rectForGrid = CGRect(x: mainView.bounds.origin.x, y: mainView.bounds.origin.y, width: mainView.bounds.width, height: mainView.bounds.height * 0.90)
         let grid = aspectRatioGrid(for: rectForGrid , withNoOfFrames: setGame.playingCards.count)
         for index in self.cardButtons.indices {
             let insetXY = (grid[index]?.height ?? 400)/100
             let buttonFrame = grid[index]?.insetBy(dx: insetXY, dy: insetXY) ?? CGRect.zero
-            //cardButtons[index].frame = grid[index]?.insetBy(dx: insetXY, dy: insetXY) ?? CGRect.zero
+            ////cardButtons[index].frame = grid[index]?.insetBy(dx: insetXY, dy: insetXY) ?? CGRect.zero
             buttonsFrames.append(buttonFrame)
         }
         
-        cardButtons.filter{$0.isFaceUp == false}.forEach{$0.frame = CGRect(origin: CGPoint(x: mainView.bounds.width * 0.35, y: mainView.bounds.height * 0.90), size: CGSize(width: mainView.bounds.width * 0.1, height: mainView.bounds.height * 0.1))}
+        cardButtons.filter{$0.isFaceUp == false}.forEach{$0.frame = deckView.frame}
         
         var delay = 0.0
         
         for card in 0..<cardButtons.count {
             delay += 0.1
             
-            //self.cardButtons[card].frame.origin = CGPoint(x: self.mainView.bounds.width * 0.35, y: self.mainView.bounds.height * 0.90)
             UIView.animate(withDuration: 0.2, delay: delay, options: .curveEaseInOut , animations: {
                 
                 self.cardButtons[card].frame = buttonsFrames[card]
@@ -396,12 +458,8 @@ class SetViewController: UIViewController, LayoutViews  {
     }
     
     func updateViewsWhenNeeded(cardNum: Int) {
-        
-     
-        
         let timeDuration = 0.2 * Double(cardButtons.count)
-        //let faceDownCards =  cardButtons.filter {$0.isFaceUp == false}
-        //let timeInterval = (timeDuration / Double(faceDownCards.count))
+        
         var delay = 0.1
         
         delay = Double(cardNum) * 0.05
@@ -419,16 +477,13 @@ class SetViewController: UIViewController, LayoutViews  {
         )
     }
     
-    //Objc methods
+    // MARK: Objc methods
     
-    @objc func onDrawCardSwipe(_ recognizer: UISwipeGestureRecognizer) {
+    @objc func dealSwipe(_ recognizer: UISwipeGestureRecognizer) {
         addingCards()
     }
-    
-    @objc func onDrawCardButton() {
-        addingCards()
-    }
-    
+
+    ////handles tap gestures to the cards.
     @objc func onCardTapGesture(_ recognizer: UITapGestureRecognizer) {
         guard let tappedCard = recognizer.view as? SetCardView else {return}
         if selectedButtons.count == 3 {
@@ -440,15 +495,9 @@ class SetViewController: UIViewController, LayoutViews  {
         tappedCard.stateOfCard = tappedCard.stateOfCard == .selected ? .unselected : .selected
         if thereIsASet {
             setGame.score += 3
-            setGameUI()
         }
         setGameUI()
     }
 }
 
-// custom views
- var deckView: SetCardView = {
-  var deck = SetCardView(frame: CGRect.zero)
-    
-    return deck
-}()
+

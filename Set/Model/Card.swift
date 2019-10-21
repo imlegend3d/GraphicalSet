@@ -10,6 +10,7 @@ import UIKit
 
 struct Card: Equatable ,CustomStringConvertible {
     
+    ////Card attributes.
     let number: Numbers
     let color: Colors
     let shape: Shapes

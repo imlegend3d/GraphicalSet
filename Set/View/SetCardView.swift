@@ -95,11 +95,10 @@ class SetCardView: UIView{
                 }
             }
         } else {
-            if let cardsBackImage = UIImage(named: "cardback"){
+            if let cardsBackImage = UIImage(named: "cardback1"){
                 cardsBackImage.draw(in: bounds)
             }
         }
-        
     }
     
     override init(frame: CGRect){

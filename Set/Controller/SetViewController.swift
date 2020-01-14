@@ -35,7 +35,6 @@ class SetViewController: UIViewController, LayoutViews  {
             mainView.addSubview(deckView)
             mainView.addSubview(discardDeck)
             setGameUI()
-            
         }
     }
     
@@ -101,7 +100,7 @@ class SetViewController: UIViewController, LayoutViews  {
     
     private func addSetCardView(for card: Card) {
         let setCardButton = SetCardView()
-        setCardButton.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        setCardButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         setCardButton.card = card
         setCardButton.contentMode = .redraw
         cardButtons.append(setCardButton)
@@ -200,10 +199,14 @@ class SetViewController: UIViewController, LayoutViews  {
         super.viewDidLoad()
         setGame = Set()
     }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+       
+    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-      
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -214,8 +217,14 @@ class SetViewController: UIViewController, LayoutViews  {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-      
+        super.viewDidAppear(animated)
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+    }
+    
+    // MARK: Action Methods
     
     private func addingCards() {
         
